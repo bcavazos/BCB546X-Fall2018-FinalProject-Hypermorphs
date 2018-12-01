@@ -8,25 +8,32 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# QTL Mapping in ICIMapping  
+# ICIMapping v3.2 was downloaded from http://www.isbreeding.net/software/default.aspx?type=detail&id=3
+# .bip data files were provided for upload to ICIMapping 
+# The mapping method Inclusive Composite Mapping (ICIM) was used for POP1 and POP2
+# The mapping method Single marker (SM) analysis was used for POP3 and POP4
+# For ICIM, a step size of 1cM was used
+# A lod threshold of 2.5 was used for all 4 populations
 
-# R/QTL mapping 
-
-# tutorial used for R/QTL mapping:  http://www.rqtl.org/rqtltour.pdf
 
 
+
+#### QTL Mapping in R/QTL 
+# Tutorial used for R/QTL mapping:  http://www.rqtl.org/rqtltour.pdf
+# Four data files were used for mapping in R/QTL:
+# ChenPop1.csv, ChenPop2.csv, ChenPop3.csv and ChenPop4.csv
 ```{r}
 
 if (!require("qtl")) install.packages("qtl")
+
 library(qtl)                                   #Load the R/qtl library
 
 POP <- read.cross("csv", ".", "ChenPop1.csv")  # read in phenotype & genotype data file
 
-POP <- jittermap(POP)              # jitters marker position slightly so no two markers on top of each other
+POP <- jittermap(POP)                          # so no two markers on top of each other
 
 summary(POP)                                   # provide information about dataset
-
-
-
 ```
 
 
@@ -35,47 +42,36 @@ summary(POP)                                   # provide information about datas
 
 ```{r}
 
-plotMissing(POP)  # examine pattern of missing data
-
-
+plotMissing(POP)                                # examine pattern of missing data
 ```
 ```{r}
 gt <- geno.table(POP)  
-gt[gt$P.value < 0.05/totmar(POP),]  # QC data by checking alleles for each marker
 
-
+gt[gt$P.value < 0.05/totmar(POP),]                 # QC data by checking alleles for each marker
 ```
 
 *** QTL mapping ***
 - uses hidden Markov model (HMM) for QTL genotype probability calculation
-
-
 ```{r}
 
 POP <- calc.genoprob(POP, step=1, error.prob=0.01)  # step size set to 1cM
 
-out.hk <- scanone(POP, method="hk")   # single QTL genome scan with Haley-Knott regression
+out.hk <- scanone(POP, method="hk")                 # single QTL genome scan with Haley-Knott regression
 
-summary(out.hk, threshold=3)          # displays maximum LOD score for each chromosome, with a min of LOD 3.0
+summary(out.hk, threshold=2.5)                      # displays maximum LOD score for each chromosome, with a min of LOD 2.5
 
 operm.hk <- scanone(POP, method="hk", n.perm=1000)  # permutation to determine LOD threshold
+
 summary(operm.hk, alpha=0.05)                       # LOD threshold output
 
-
 plot(out.hk)                                        # Plot QTL
-
-
-
 ```
 
 
 
 
 
-```{r}
 
-
-```
 
 
 
