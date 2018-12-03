@@ -1,0 +1,183 @@
+---
+title: "Attempt t filtering for association mapping + Figure 1"
+author: "Tatenda Musimwa"
+date: "November 16, 2018"
+output: html_document
+---
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r} 
+geno <- read.csv("./geno.csv")
+geno #data inspection
+```
+
+```{r}
+unique(geno$alleles) #two strange data to be removed
+```
+
+# Calculation before filtering
+# R(AG) Y(CT) S(CG) W(AT) K(GT) M(AC) N(NA)
+```{r}
+geno_remove_na <- filter(geno,!is.na(alleles)) #remove SNPs with NA in "alleles"
+geno_sep <- separate(geno_remove_na,alleles,c("allele1","allele2"),sep = "/") #seperate "alleles" to "allele1" & "allele2"
+geno_count <- geno_sep %>% unite(string,-(1:12),sep = "",remove = T) %>% #unite all SNP columns together
+  mutate(count.A=str_count(string,"A"), # count the number of "A" in "string"
+         count.C=str_count(string,"C"),
+         count.G=str_count(string, "G"),
+         count.T=str_count(string,"T"),
+         count.R=str_count(string,"R"),
+         count.Y=str_count(string,"Y"),
+         count.S=str_count(string,"S"),
+         count.W=str_count(string,"W"),
+         count.K=str_count(string,"K"),
+         count.M=str_count(string,"M"),
+         count.N=str_count(string,"N")
+  )
+unique(geno_sep$allele1)
+
+for (i in 1:nrow(geno_count)) # loop by row
+{
+  if (geno_count[i,2] == "A") # if allele1 = A, then allele1_count = count_A
+  {
+    geno_count$allele1_c[i] = geno_count$count.A[i] + (geno_count$count.R[i] + geno_count$count.W[i] + geno_count$count.M[i])/2
+  } 
+  else
+    {
+    if (geno_count[i,2] == "G")
+      {
+      geno_count$allele1_c[i] = geno_count$count.G[i] +(geno_count$count.R[i] + geno_count$count.S[i] + geno_count$count.K[i])/2
+      } 
+      else
+        {
+        if (geno_count[i,2] == "C")
+          {
+           geno_count$allele1_c[i] = geno_count$count.C[i] +(geno_count$count.Y[i] + geno_count$count.S[i] +geno_count$count.M[i])/2
+          } 
+          else 
+            {
+            geno_count$allele1_c[i] = geno_count$count.T[i] +(geno_count$count.Y[i] + geno_count$count.W[i] +geno_count$count.K[i])/2
+            }
+        }
+    }
+}
+
+
+for (i in 1:nrow(geno_count)) 
+{
+  if (is.na(geno_count[i,3])) # if allele2 = NA, allele2_count = 0
+  {
+     geno_count$allele2_c[i] = 0
+  }
+  else
+    {
+      if(geno_count[i,3] == "A")
+      {
+        geno_count$allele2_c[i] = geno_count$count.A[i] + (geno_count$count.R[i] + geno_count$count.W[i] + geno_count$count.M[i])/2
+      }
+    else
+    {
+        if (geno_count[i,3] == "G")
+          {
+          geno_count$allele2_c[i] = geno_count$count.G[i] +(geno_count$count.R[i] + geno_count$count.S[i] + geno_count$count.K[i])/2
+          } 
+        else
+        {
+          if (geno_count[i,3] == "C")
+            {
+            geno_count$allele2_c[i] = geno_count$count.C[i] +(geno_count$count.Y[i] + geno_count$count.S[i] +geno_count$count.M[i])/2
+          } 
+          else
+          {
+            geno_count$allele2_c[i] = geno_count$count.T[i] +(geno_count$count.Y[i] + geno_count$count.W[i] +geno_count$count.K[i])/2
+          }
+        }
+    }
+    }
+}
+
+```
+
+#Calculating statistics for filtering
+```{r}
+geno_count$allele_c_sum <- geno_count$count.N +geno_count$count.A +geno_count$count.C +geno_count$count.G +geno_count$count.T +geno_count$count.R +geno_count$count.Y +geno_count$count.S +geno_count$count.W +geno_count$count.K +geno_count$count.M
+summary(geno_count$allele_c_sum) #854
+
+geno_count$allele1_f <- geno_count$allele1_c/geno_count$allele_c_sum
+geno_count$allele2_f <- geno_count$allele2_c/geno_count$allele_c_sum
+
+summary(geno_count$allele1_f) #somehow there are NAs, need to be removed
+summary(geno_count$allele2_f) #somehow there are NAs, need to be removed
+```
+
+#Filtering
+##by MAF/Missing value done
+###by physical position to be done
+```{r}
+filter <- filter(geno_count,count.N < 86 ) %>% #filter by missing value (854 * 0.1 = 85.4)
+  filter(allele2_f > 0.1) %>% # filter by minor allele frequency
+  filter(allele1_f >0.1)
+```
+
+#calculating statistics for ploting
+```{r}
+head(geno_count)
+snp_summary <- geno_count[c("snp_id","chrom")]
+snp_summary[,2] <- as.character(snp_summary[,2]) #chromosome as character
+snp_summary$missing_value <- (geno_count$count.N/geno_count$allele_c_sum )*100 #%
+snp_summary$heterozygosity <- ((geno_count$count.K + geno_count$count.R +geno_count$count.Y +geno_count$count.S +geno_count$count.W +geno_count$count.M)/geno_count$allele_c_sum )*100
+snp_summary$MAF <- pmin(geno_count$allele1_f,geno_count$allele2_f) *100
+snp_summary <- snp_summary %>%
+  mutate(MAF_binned = cut(MAF,breaks = c(0,5,10,15,20,25,30,35,40,45,100),include.lowest = T)) %>%
+  mutate(Missing_binned = cut(missing_value,breaks = c(0,1,2,4,6,8,10,20,30,40,100),include.lowest = T)) %>%
+  mutate(heterozygosity_binned = cut(heterozygosity,breaks = c(0,2.5,5,7.5,10,20,30,40,100),include.lowest = T)) 
+snp_summary
+unique(snp_summary$MAF_binned)
+```
+#Plot 
+## axis title & title to be added
+## color to be changed
+## chromosome order to be changed
+```{r}
+A <- ggplot(data = snp_summary) +
+  geom_bar(mapping = aes(x = chrom)) 
+A + scale_x_discrete(limits=c("0","1","2","3","4","5","6","7","8","9","10"))
+
+
+ggsave(filename = "figure1_A1.jpg",plot = A)
+```
+
+
+```{r}
+B <- ggplot(data = snp_summary) +
+  geom_bar(mapping = aes(x = Missing_binned)) 
+B
+ggsave(filename = "figure1_B.jpg",plot = B)
+```
+
+
+
+```{r}
+C <- ggplot(data = snp_summary) +
+  geom_bar(mapping = aes(x = MAF_binned))
+C
+ggsave(filename = "figure1_C.jpg",plot = C)
+snp_summary$MAF_binned
+```
+
+
+
+```{r}
+D <- ggplot(data = snp_summary) +
+  geom_bar(mapping = aes(x = heterozygosity_binned))
+D
+ggsave(filename = "figure1_D.jpg",plot = D)
+```
+
+
+
+
+
+
