@@ -1,5 +1,5 @@
 ---
-title: "filtering for PCA"
+title: "Attempt t filtering for association mapping + Figure 1"
 author: "Tatenda Musimwa"
 date: "November 16, 2018"
 output: html_document
@@ -143,19 +143,41 @@ unique(snp_summary$MAF_binned)
 ```{r}
 A <- ggplot(data = snp_summary) +
   geom_bar(mapping = aes(x = chrom)) 
-ggsave(filename = "figure1_A.jpg",plot = A)
+A + scale_x_discrete(limits=c("0","1","2","3","4","5","6","7","8","9","10"))
 
+
+ggsave(filename = "figure1_A1.jpg",plot = A)
+```
+
+
+```{r}
 B <- ggplot(data = snp_summary) +
   geom_bar(mapping = aes(x = Missing_binned)) 
+B
 ggsave(filename = "figure1_B.jpg",plot = B)
+```
 
+
+
+```{r}
 C <- ggplot(data = snp_summary) +
-  geom_bar(mapping = aes(x = MAF_binned)) 
+  geom_bar(mapping = aes(x = MAF_binned))
+C
 ggsave(filename = "figure1_C.jpg",plot = C)
 snp_summary$MAF_binned
+```
 
+
+
+```{r}
 D <- ggplot(data = snp_summary) +
   geom_bar(mapping = aes(x = heterozygosity_binned))
+D
 ggsave(filename = "figure1_D.jpg",plot = D)
 ```
+
+
+
+
+
 
