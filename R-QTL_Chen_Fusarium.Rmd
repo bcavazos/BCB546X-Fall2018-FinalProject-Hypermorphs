@@ -23,6 +23,12 @@ knitr::opts_chunk$set(echo = TRUE)
 # Tutorial used for R/QTL mapping:  http://www.rqtl.org/rqtltour.pdf
 # Four data files were used for mapping in R/QTL:
 # ChenPop1.csv, ChenPop2.csv, ChenPop3.csv and ChenPop4.csv
+# The input files were created from the .bip files provided by the authors
+#   First the .bip files were opened in excel
+#   Then the header info was removed
+#   Next the alleles were changed to A,B,H (0=A, 1=H, 2=B, -1=-)
+#   Finally, the excel was saved as a .csv file
+#   
 ```{r}
 
 if (!require("qtl")) install.packages("qtl")
