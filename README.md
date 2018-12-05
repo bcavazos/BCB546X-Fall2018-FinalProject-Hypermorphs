@@ -3,7 +3,7 @@ Final Project Presentation can be found here: https://docs.google.com/presentati
 
 Contents in the directory:
 
-* `raw_data` is a folder containing all original files provided by Chen et al in the supplementary material, found here http://www.g3journal.org/content/6/12/3803.supplemental. Items within the raw data folder include the following: 
+* `data` is a folder containing all data needed to reproduce the results. The original files provided by Chen et al in the supplementary material, found here http://www.g3journal.org/content/6/12/3803.supplemental. Those are put in a subfolder called `raw_data`. Items within the raw data folder include the following: 
   * phenotype data - `BLUE-Pheno.txt` 
   * genotype data - `GenotypeHapmap.txt`
   * Population data, formatted for software:
@@ -11,9 +11,15 @@ Contents in the directory:
     * `POP2.csv`
     * `POP3.csv`
     * `POP4.csv`
+* Our `scripts` folder has individual markdown files we used to reproduce different parts of the analysis in Chen et al. 2016. Inside it includes:
+  * `Association mapping filtering attempt + Figure1`
+  * `formatting for structure`
+  * `PCA_ggplot`
+  * `R-QTL_Chen_Fusarium`
+* `software_output` is a folder that contains extra images and/or detail of software used to re-run any part of the analysis. It includes
+  * `NJ tree`
+  * `PCA results using Tassel with plots made in r`
 * `Chen-etal-2016.md` introduces original paper, explains technical details of replication of analyses and summarizes replication of original results
-* code directory that will contain commented code for replication
-* data dictionary that contains links to data necessary to run code
 
 Member Contributions - 
 
@@ -23,6 +29,6 @@ Member Contributions -
 
 ​	PM: STRUCTURE analysis
 
-​	KN: Introduction and intro/ methods in presentation
+​	KN: Introduction and intro/ methods in presentation, bulk of Chen-et-al 2016.md
 
 ​	BC: Initial Data inspection and formatting using R and Unix, formatting repository
