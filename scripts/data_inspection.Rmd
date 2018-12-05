@@ -1,0 +1,64 @@
+---
+title: "Data Inspection"
+author: "Hypermorphs"
+date: "December 4, 2018"
+output: html_document
+---
+
+The purpose of this Rmd is to inspect and describe the two primary data sets used in the `Chen et al 2016` paper 
+
+```{r }
+## READING IN DATA ##
+# FYI - if your working directory is in the scripts folder, you'll need to add '../' before data in the read.delim function. If working in project repository, remove ../
+
+geno <- read.delim("../data/raw_data/GenotypeHapmap.txt", header=TRUE)
+pheno <- read.delim("../data/raw_data/BLUE-Pheno.txt", header=TRUE)
+
+```
+
+```{r}
+# First inspecting GENOTYPE DATA
+object.size(geno) # about 200MB
+dim(geno) # dimensions of genotype data
+head(geno[,1:15], 10) # just showing the output of first five columns for all of these inspections because there are a ton of columns..(865)
+tail(geno[,1:5])
+# str(geno) output is pretty long
+unique(geno$chrom) # ten chromosomes
+typeof(geno) # list
+str(geno) # tis will be obnoxiously long bc there are tens of thousands of rows... really not super informative, but we know that the snps are all classified as factors. 
+attributes(geno) # even longer with similar info given
+
+```
+
+```{r}
+# Next inspecting PHENOTYPE DATA
+object.size(pheno) # about 340KB
+dim(pheno) # dimensions of phenotype data - 491 x 5
+head(pheno) 
+tail(pheno)
+typeof(pheno) # list
+str(pheno) # tis will be slightly less obnoxiously long than geno
+# attributes(pheno) # this is useless...
+
+# Changing the blues values to numeric ( it does something weird if you don't make it into a character first)
+pheno$PIA.TL11A<-as.numeric(as.character(pheno$PIA.TL11A))
+pheno$PIA.AF10A<-as.numeric(as.character(pheno$PIA.AF10A))
+pheno$PIA.AF11A<-as.numeric(as.character(pheno$PIA.AF11A))
+pheno$PIA.Combine<-as.numeric(as.character(pheno$PIA.Combine))
+
+summary(pheno$PIA.TL11A)
+summary(pheno$PIA.AF10A)
+summary(pheno$PIA.AF11A)
+summary(pheno$PIA.Combine)
+
+par(mfrow = c(2,2))
+hist(pheno$PIA.TL11A, breaks = 20)
+hist(pheno$PIA.AF10A, breaks = 20)
+hist(pheno$PIA.AF11A, breaks = 20)
+hist(pheno$PIA.Combine, breaks = 20)
+# not really sure about what blues values mean but they seem to have a pretty skewed distribution regardless of the environment.
+
+```
+
+POP1-4 csv's are formatted for IciMapping v3.2 software. It is heavily commented and in the form of a list rather than a data set. They could be inspected in R if each part was cut individually. 
+
