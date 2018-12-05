@@ -10,8 +10,10 @@ library(ggplot2)
 ```
 
 ```{r} 
-geno <- read.csv("./geno.csv")
-geno #data inspection
+# working directory is set to project repository
+geno <- read.delim("../data/raw_data/GenotypeHapmap.txt", header=TRUE)
+
+# geno #data inspection
 ```
 
 ```{r}
