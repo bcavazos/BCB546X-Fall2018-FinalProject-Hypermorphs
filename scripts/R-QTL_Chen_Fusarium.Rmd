@@ -35,7 +35,7 @@ if (!require("qtl")) install.packages("qtl")
 
 library(qtl)                                   #Load the R/qtl library
 
-POP <- read.cross("csv", ".", "ChenPop1.csv")  # read in phenotype & genotype data file
+POP <- read.cross("csv", ".", "../data/ChenPop1.csv")  # read in phenotype & genotype data file
 
 POP <- jittermap(POP)                          # so no two markers on top of each other
 
