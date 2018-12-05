@@ -40,7 +40,7 @@ The objectives of this study was to use GWAS to identify genomic regions associa
 
 #### **Replication Summary of the Original results**
 
-- **Data Inspection**: Using R and Python for genotype, phenotype - BLUEs and POP1-4. A total of 818 tropical maize inbred lines were found in the `GentotypeHapmap.txt`. 
+- **Data Inspection**: All data files were inspected using R (genotype, blues phenotype, and biparental populations). BLUEs phenotype data were inspected only, and not used for any of our replication. Genotype data inspection can also be found in the markdown `data_inspectoin`. The biparental population data are in a format for iciMapping software and therefore we described them but they were not inspected in R. 
 
 - **QTL discovery: two methods**: 
 
