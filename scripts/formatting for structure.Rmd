@@ -1,0 +1,73 @@
+---
+title: "STURCTURE_input_format"
+author: "Tatenda"
+date: "November 28, 2018"
+output: html_document
+---
+```{r}
+library(tidyverse)
+```
+
+#R(AG) Y(CT) S(CG) W(AT) K(GT) M(AC) N(NA)
+```{r}
+filter_t <- as.data.frame(t(DH1_2[,-(1:3)]))
+colnames(filter_t) <- DH1_2[,1]
+filter_t[] <- lapply(filter_t, as.character) 
+filter_r <- filter_t 
+filter_r <- filter_t  %>%
+  replace(filter_r == "T",2) %>%
+  replace(filter_r == "C",3) %>%
+  replace(filter_r == "G",4) %>%
+  replace(filter_r == "R","AG") %>%
+  replace(filter_r == "Y","CT") %>%
+  replace(filter_r == "S","CG") %>%
+  replace(filter_r == "W","AT") %>%
+  replace(filter_r == "K","GT")%>%
+  replace(filter_r == "M","AC") %>%
+  replace(filter_r == "N",-9) %>%
+  replace(filter_r == "A",1) 
+
+head(filter_r)
+copy1 <- filter_r
+copy1 <- filter_r %>% 
+  replace(copy1 == "AT",1) %>%
+  replace(copy1 == "AC",1) %>%
+  replace(copy1 == "AG",1) %>%
+  replace(copy1 == "TA",2) %>%
+  replace(copy1 == "TC",2) %>%
+  replace(copy1 == "TG",2) %>%
+  replace(copy1 == "CA",3) %>%
+  replace(copy1 == "CT",3) %>%
+  replace(copy1 == "CG",3) %>%
+  replace(copy1 == "GA",4) %>%
+  replace(copy1 == "GT",4) %>%
+  replace(copy1 == "GC",4) 
+
+copy2 <- filter_r
+copy2 <- filter_r %>% 
+  replace(copy2 == "AT",2) %>%
+  replace(copy2 == "AC",3) %>%
+  replace(copy2 == "AG",4) %>%
+  replace(copy2 == "TA",1) %>%
+  replace(copy2 == "TC",3) %>%
+  replace(copy2 == "TG",4) %>%
+  replace(copy2 == "CA",1) %>%
+  replace(copy2 == "CT",2) %>%
+  replace(copy2 == "CG",5) %>%
+  replace(copy2 == "GA",1) %>%
+  replace(copy2 == "GT",2) %>%
+  replace(copy2 == "GC",3) 
+
+combined <- rbind(copy1,copy2) 
+write.table(combined,"geno_format_structure.txt")
+
+head(filter_r)
+head(copy1)
+head(copy2)
+head(combined)
+```
+
+```{r}
+combined <- rbind(copy1,copy2)
+```
+
