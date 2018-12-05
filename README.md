@@ -1,4 +1,5 @@
 # BCB546X-Fall2018-FinalProject
+Final Project Presentation can be found here: https://docs.google.com/presentation/d/1Zhym3RUuCn06fQulqfDDNMcJ4lr2ww_iJKD8QkOl9WI/edit?usp=sharing
 
 Contents in the directory:
 
@@ -24,4 +25,4 @@ Member Contributions -
 
 ​	KN: Introduction and intro/ methods in presentation
 
-​	BC: Initial Data inspection and formatting using R and Unix
+​	BC: Initial Data inspection and formatting using R and Unix, formatting repository
