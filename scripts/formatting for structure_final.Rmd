@@ -1,0 +1,98 @@
+---
+title: "Untitled"
+author: "musimwa"
+date: "December 5, 2018"
+output: html_document
+---
+
+
+```{r}
+geno <- read.delim("GenotypeHapmap.txt", h=T, sep = "\t",stringsAsFactors = F, check.names = F, skip = 1, na.strings = NA)
+
+
+```
+
+#TRANSFORMING INTO MATRIX
+
+```{r}
+geno <- as.matrix(geno)
+```
+
+
+
+#size of matrix dim(geno)
+
+#RANDOMLY SELECTING 2000 MARKERS
+```{r}
+seed = 1 length(sample(2:dim(geno)[2],53103,replace=F))geno2 <- geno[,-sample(2:dim(geno)[2],53103,replace=F)] dim(geno2)
+
+The new data now (geno 2), has just 2000 markers and 854 individuals
+
+```
+
+
+#REPLACING NA WITH -9
+
+```{r}
+i = 2 j = 1 for (i in i:dim(geno2)[2]){ j = 1 for (j in j:dim(geno2)[1]){ if (is.na(geno2[j,i] == TRUE)){ geno2[j,i] <- -9}}}
+```
+
+
+
+#THEN I ADDED ANOTHER COLUMN TO INDICATE THE FAMILY. I SCORED ALL IMDIVIDUALS AS 1.
+
+```{r}
+geno2 <- cbind(geno2, 1) dim(geno2)
+```
+
+
+
+
+#ORDERING COLUMNS
+
+```{r}
+geno <- geno2[,c(1,2002,2:2001)]
+```
+
+
+
+#DUPLICATION OF FILES
+
+
+
+```{r}
+geno_final <- geno
+```
+
+#Structure requires repetitions from a given individual based on the ploidy level. For example, since this is a dipolid species, I duplicated each of the inbred lines and ordered them by their name. By doing that,the file will have twice the numbers of individual in rows.
+
+```{r}
+
+geno_final <- geno[rep(1:nrow(geno), times = 2), ] geno_final <- geno_final[order(geno[,1]),]
+```
+
+
+#The name of the markers were complicated,which could pose a problem in structure.I replaced the markers names by SNP_1, SNP_2,..............
+
+```{r}
+colnames(geno_final) <- c("","",paste("SNP", seq(1:2000), sep = "_"))
+
+geno_final <- as.matrix(geno_final)
+```
+
+
+
+#Export from R into excel
+
+```{r}
+write.table(teste2, "structure_duplicate.txt", sep = " ", dec = ",", row.names = FALSE)
+```
+
+
+
+#Excel
+
+Open the file "structure_duplicate.txt) and save it
+
+
+
